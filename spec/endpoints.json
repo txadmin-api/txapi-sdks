@@ -1,0 +1,1619 @@
+{
+  "$comment": "GENERATED from the txApi API catalog — do not edit by hand.",
+  "apiVersion": "1.8.0",
+  "basePath": "/api/v1",
+  "permissions": [
+    "players.read",
+    "players.write",
+    "server.control",
+    "console.write",
+    "logs.view",
+    "admin.manage"
+  ],
+  "endpoints": [
+    {
+      "id": "account.me",
+      "method": "GET",
+      "path": "/api/v1/me",
+      "permission": null,
+      "accountLevel": true,
+      "summary": "Eigenes Konto: Plan, Features, Kontingent, Key",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "account.servers",
+      "method": "GET",
+      "path": "/api/v1/servers",
+      "permission": null,
+      "accountLevel": true,
+      "summary": "Erreichbare Server (für ?serverId=)",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "players.search",
+      "method": "GET",
+      "path": "/api/v1/players/search",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Spieler nach Anzeigename suchen",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "sortBy",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "filters",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "players.online",
+      "method": "GET",
+      "path": "/api/v1/players/online",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Gerade verbundene Spieler",
+      "params": [
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "players.lookup",
+      "method": "GET",
+      "path": "/api/v1/players/lookup",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Spieler per Identifier finden (license / discord / fivem / steam)",
+      "params": [
+        {
+          "name": "identifier",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "players.info",
+      "method": "GET",
+      "path": "/api/v1/players/info",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Vollständiger Spieler-Datensatz",
+      "params": [
+        {
+          "name": "identifier",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "players.stats",
+      "method": "GET",
+      "path": "/api/v1/players/stats",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Spieler-DB-Statistik (Gesamtzahlen, letzte 24 h …)",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "players.warn",
+      "method": "POST",
+      "path": "/api/v1/players/warn",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Verwarnung aussprechen",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "maxLength": 512
+        }
+      ]
+    },
+    {
+      "id": "players.ban",
+      "method": "POST",
+      "path": "/api/v1/players/ban",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Spieler bannen",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "maxLength": 512
+        },
+        {
+          "name": "durationHours",
+          "type": "integer",
+          "required": false
+        },
+        {
+          "name": "discordBan",
+          "type": "boolean",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "players.kick",
+      "method": "POST",
+      "path": "/api/v1/players/kick",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Vom Server kicken",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "maxLength": 512
+        }
+      ]
+    },
+    {
+      "id": "players.dm",
+      "method": "POST",
+      "path": "/api/v1/players/dm",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Direktnachricht senden",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "required": true,
+          "maxLength": 512
+        }
+      ]
+    },
+    {
+      "id": "players.notes",
+      "method": "POST",
+      "path": "/api/v1/players/notes",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Staff-Notiz auf Spieler setzen",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "required": false,
+          "maxLength": 2000
+        }
+      ]
+    },
+    {
+      "id": "players.whitelist",
+      "method": "POST",
+      "path": "/api/v1/players/whitelist",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Whitelist-Status setzen",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "whitelisted",
+          "type": "boolean",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "history.bans",
+      "method": "GET",
+      "path": "/api/v1/history/bans",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Ban-Liste (Cursor-paginiert)",
+      "params": [
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "history.warns",
+      "method": "GET",
+      "path": "/api/v1/history/warns",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Warn-Liste (Cursor-paginiert)",
+      "params": [
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "history.search",
+      "method": "GET",
+      "path": "/api/v1/history/search",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Bans und Verwarnungen filtern und durchsuchen",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "admin",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "searchType",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "history.ban-templates",
+      "method": "GET",
+      "path": "/api/v1/txadmin/ban-templates",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "In txAdmin hinterlegte Bann-Vorlagen",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "history.action",
+      "method": "GET",
+      "path": "/api/v1/history/action/{actionId}",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Einzelne Aktion per ID",
+      "params": [
+        {
+          "name": "actionId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "history.stats",
+      "method": "GET",
+      "path": "/api/v1/history/stats",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Anzahl Bans / Warns",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "history.revoke",
+      "method": "POST",
+      "path": "/api/v1/history/revoke/{actionId}",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Ban oder Warn widerrufen",
+      "params": [
+        {
+          "name": "actionId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": [
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "maxLength": 512
+        },
+        {
+          "name": "discordUnban",
+          "type": "boolean",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "server.status",
+      "method": "GET",
+      "path": "/api/v1/server/status",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Online-State, txAdmin- & FXServer-Version, Spielerzahlen",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.diagnostics",
+      "method": "GET",
+      "path": "/api/v1/server/diagnostics",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "txAdmin-Diagnose (Laufzeit, Host, Speicher, Prozesse)",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.drops",
+      "method": "GET",
+      "path": "/api/v1/server/drops",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Player-Drop-Statistiken für Crash-Analyse",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.performance",
+      "method": "GET",
+      "path": "/api/v1/server/performance",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Thread-Performance des FXServers (Tick-Zeiten)",
+      "params": [
+        {
+          "name": "thread",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "server.restart",
+      "method": "POST",
+      "path": "/api/v1/server/restart",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "FXServer neustarten",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.start",
+      "method": "POST",
+      "path": "/api/v1/server/start",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "FXServer starten",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.stop",
+      "method": "POST",
+      "path": "/api/v1/server/stop",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "FXServer stoppen",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "server.schedule-restart",
+      "method": "POST",
+      "path": "/api/v1/server/schedule-restart",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Einmaligen Neustart über txAdmins Zeitplan setzen",
+      "params": [],
+      "body": [
+        {
+          "name": "time",
+          "type": "string",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "server.skip-restart",
+      "method": "POST",
+      "path": "/api/v1/server/skip-restart",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Nächsten geplanten Neustart überspringen",
+      "params": [],
+      "body": [
+        {
+          "name": "skip",
+          "type": "boolean",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "server.kickall",
+      "method": "POST",
+      "path": "/api/v1/server/kickall",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Alle Spieler kicken (z. B. für Wartung)",
+      "params": [],
+      "body": [
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "maxLength": 512
+        }
+      ]
+    },
+    {
+      "id": "server.announcement",
+      "method": "POST",
+      "path": "/api/v1/server/announcement",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Server-Announcement broadcasten",
+      "params": [],
+      "body": [
+        {
+          "name": "message",
+          "type": "string",
+          "required": true,
+          "maxLength": 512
+        }
+      ]
+    },
+    {
+      "id": "server.resource.start",
+      "method": "POST",
+      "path": "/api/v1/server/resource/start",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Einzelne Resource starten",
+      "params": [],
+      "body": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "maxLength": 128
+        }
+      ]
+    },
+    {
+      "id": "server.resource.stop",
+      "method": "POST",
+      "path": "/api/v1/server/resource/stop",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Einzelne Resource stoppen",
+      "params": [],
+      "body": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "maxLength": 128
+        }
+      ]
+    },
+    {
+      "id": "server.resource.restart",
+      "method": "POST",
+      "path": "/api/v1/server/resource/restart",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Einzelne Resource neustarten",
+      "params": [],
+      "body": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "maxLength": 128
+        }
+      ]
+    },
+    {
+      "id": "server.resource.ensure",
+      "method": "POST",
+      "path": "/api/v1/server/resource/ensure",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Resource starten, falls gestoppt",
+      "params": [],
+      "body": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "maxLength": 128
+        }
+      ]
+    },
+    {
+      "id": "server.resource.refresh",
+      "method": "POST",
+      "path": "/api/v1/server/resource/refresh",
+      "permission": "server.control",
+      "accountLevel": false,
+      "summary": "Resources-Verzeichnis neu scannen",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "console.buffer",
+      "method": "GET",
+      "path": "/api/v1/console",
+      "permission": "console.write",
+      "accountLevel": false,
+      "summary": "Letzte 500 Konsolen-Zeilen",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "console.command",
+      "method": "POST",
+      "path": "/api/v1/console/command",
+      "permission": "console.write",
+      "accountLevel": false,
+      "summary": "Konsolen-Befehl ausführen",
+      "params": [],
+      "body": [
+        {
+          "name": "command",
+          "type": "string",
+          "required": true,
+          "maxLength": 1024
+        }
+      ]
+    },
+    {
+      "id": "serverlog.buffer",
+      "method": "GET",
+      "path": "/api/v1/server/log",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Letzte 500 Server-Log-Einträge",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "serverlog.history",
+      "method": "GET",
+      "path": "/api/v1/server/log/history",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Ältere Server-Log-Seiten (live aus txAdmin)",
+      "params": [
+        {
+          "name": "direction",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "ref",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.list",
+      "method": "GET",
+      "path": "/api/v1/events",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Alle Ereignisse, filterbar",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.deaths",
+      "method": "GET",
+      "path": "/api/v1/events/deaths",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Letzte Tode (mit Ursache und Killer)",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "victim",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "killer",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cause",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "pvp",
+          "in": "query",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.kills",
+      "method": "GET",
+      "path": "/api/v1/events/kills",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Letzte Kills (Tode durch Spieler)",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "killer",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "victim",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cause",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.leaderboard",
+      "method": "GET",
+      "path": "/api/v1/events/leaderboard",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Bestenliste: Kills, Tode, K/D",
+      "params": [
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.player",
+      "method": "GET",
+      "path": "/api/v1/events/player",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Statistik eines Spielers",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.summary",
+      "method": "GET",
+      "path": "/api/v1/events/summary",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Zusammenfassung (Ereignisse je Typ, Kills, Spieler)",
+      "params": [
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.chat",
+      "method": "GET",
+      "path": "/api/v1/events/chat",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Chat-Verlauf (nur wenn Chat-Protokoll eingeschaltet)",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.commands",
+      "method": "GET",
+      "path": "/api/v1/events/commands",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Ausgeführte Befehle von Spielern",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.admin-actions",
+      "method": "GET",
+      "path": "/api/v1/events/admin-actions",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Admin-Aktionen aus txAdmin-Panel und -Menü",
+      "params": [
+        {
+          "name": "admin",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "kind",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.actions",
+      "method": "GET",
+      "path": "/api/v1/events/actions",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Bans und Verwarnungen aus jeder Quelle",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "admin",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "revoked",
+          "in": "query",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.sessions",
+      "method": "GET",
+      "path": "/api/v1/events/sessions",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Joins und Leaves (mit Grund)",
+      "params": [
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.playtime",
+      "method": "GET",
+      "path": "/api/v1/events/playtime",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Spielzeit pro Spieler",
+      "params": [
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "player",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.activity",
+      "method": "GET",
+      "path": "/api/v1/events/activity",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "Aktivität pro Stunde oder Tag",
+      "params": [
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "bucket",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "name": "timeZone",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "events.action-log",
+      "method": "GET",
+      "path": "/api/v1/txadmin/action-log",
+      "permission": "logs.view",
+      "accountLevel": false,
+      "summary": "txAdmin-Admin-Log live (nicht gespeichert)",
+      "params": [
+        {
+          "name": "lines",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "whitelist.requests",
+      "method": "GET",
+      "path": "/api/v1/whitelist/requests",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Offene Anfragen",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "whitelist.approve",
+      "method": "POST",
+      "path": "/api/v1/whitelist/requests/{requestId}/approve",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Anfrage annehmen",
+      "params": [
+        {
+          "name": "requestId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "whitelist.deny",
+      "method": "POST",
+      "path": "/api/v1/whitelist/requests/{requestId}/deny",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Anfrage ablehnen",
+      "params": [
+        {
+          "name": "requestId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "whitelist.deny-all",
+      "method": "POST",
+      "path": "/api/v1/whitelist/requests/deny-all",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Alle offenen Anfragen ablehnen",
+      "params": [],
+      "body": [
+        {
+          "name": "before",
+          "type": "integer",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "whitelist.approvals",
+      "method": "GET",
+      "path": "/api/v1/whitelist/approvals",
+      "permission": "players.read",
+      "accountLevel": false,
+      "summary": "Vorab freigegebene Identifier",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "whitelist.approvals.add",
+      "method": "POST",
+      "path": "/api/v1/whitelist/approvals",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Identifier vorab freigeben",
+      "params": [],
+      "body": [
+        {
+          "name": "identifier",
+          "type": "string",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "whitelist.approvals.remove",
+      "method": "DELETE",
+      "path": "/api/v1/whitelist/approvals/{identifier}",
+      "permission": "players.write",
+      "accountLevel": false,
+      "summary": "Vorab-Freigabe entfernen",
+      "params": [
+        {
+          "name": "identifier",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "admins.list",
+      "method": "GET",
+      "path": "/api/v1/txadmin/admins",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Liste der Panel-Admins",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "admins.get",
+      "method": "GET",
+      "path": "/api/v1/txadmin/admins/{name}",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Einzelner Admin",
+      "params": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "admins.permissions",
+      "method": "GET",
+      "path": "/api/v1/txadmin/admins/available-permissions",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Liste aller wählbaren Admin-Permissions",
+      "params": [],
+      "body": []
+    },
+    {
+      "id": "admins.add",
+      "method": "POST",
+      "path": "/api/v1/txadmin/admins",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Neuen Panel-Admin anlegen",
+      "params": [],
+      "body": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "citizenfxId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "discordId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "permissions",
+          "type": "string[]",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "admins.edit",
+      "method": "PUT",
+      "path": "/api/v1/txadmin/admins/{name}",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Bestehenden Admin aktualisieren",
+      "params": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": [
+        {
+          "name": "citizenfxId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "discordId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "permissions",
+          "type": "string[]",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "admins.delete",
+      "method": "DELETE",
+      "path": "/api/v1/txadmin/admins/{name}",
+      "permission": "admin.manage",
+      "accountLevel": false,
+      "summary": "Panel-Admin entfernen",
+      "params": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "body": []
+    }
+  ],
+  "websockets": [
+    {
+      "id": "ws.console",
+      "path": "/ws/console",
+      "permission": "console.write",
+      "serverFrames": [
+        "init",
+        "log",
+        "ack",
+        "error"
+      ],
+      "clientFrames": [
+        "command"
+      ],
+      "maxMessageBytes": 16384
+    },
+    {
+      "id": "ws.serverlog",
+      "path": "/ws/serverlog",
+      "permission": "logs.view",
+      "serverFrames": [
+        "init",
+        "log",
+        "error"
+      ],
+      "clientFrames": [],
+      "maxMessageBytes": 4096
+    }
+  ],
+  "webhookEvents": [
+    "action.revoked",
+    "console.command",
+    "log.admin_action",
+    "log.ban",
+    "log.kill",
+    "log.warn",
+    "ping",
+    "player.ban_synced",
+    "player.banned",
+    "player.kicked",
+    "player.messaged",
+    "player.note",
+    "player.warned",
+    "player.whitelist",
+    "quota.warning",
+    "schedule.ran",
+    "server.announcement",
+    "server.kickall",
+    "server.offline",
+    "server.online",
+    "server.resource",
+    "server.restart_scheduled",
+    "server.restart_skipped",
+    "server.restarted",
+    "server.started",
+    "server.stopped",
+    "txadmin.admin",
+    "whitelist.approval_added",
+    "whitelist.approval_removed",
+    "whitelist.approved",
+    "whitelist.denied",
+    "whitelist.denied_all"
+  ]
+}

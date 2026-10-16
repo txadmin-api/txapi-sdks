@@ -1,0 +1,648 @@
+{
+  "GET /api/v1/me": {
+    "success": true,
+    "accountId": 42,
+    "plan": {
+      "code": "professional",
+      "features": [
+        "console.write",
+        "logs.view",
+        "players.read",
+        "players.write",
+        "server.control"
+      ],
+      "serverLimit": 3,
+      "logRetentionDays": 30
+    },
+    "quota": {
+      "unlimited": false,
+      "used": 1834,
+      "limit": 100000,
+      "remaining": 98166,
+      "resetsAt": "2026-11-01T00:00:00Z"
+    },
+    "rpmLimit": 120,
+    "rpmUnlimited": false,
+    "auth": "apiKey",
+    "key": {
+      "id": 7,
+      "name": "Discord-Bot",
+      "prefix": "txp_live_ab12",
+      "scopes": [],
+      "allowedIps": []
+    }
+  },
+  "GET /api/v1/servers": {
+    "success": true,
+    "count": 1,
+    "servers": [
+      {
+        "id": 1,
+        "name": "Main RP",
+        "txServerName": "MyRP",
+        "active": true,
+        "health": "ONLINE",
+        "healthCheckedAt": "2026-10-07T12:00:00Z",
+        "offlineAlerts": true,
+        "eventLog": true,
+        "banSync": false
+      }
+    ]
+  },
+  "GET /api/v1/players/search": {
+    "players": [
+      {
+        "license": "0123456789abcdef0123456789abcdef01234567",
+        "displayName": "John",
+        "playTime": 12480,
+        "tsJoined": 1706745600,
+        "tsLastConnection": 1717689601,
+        "notes": "VIP since 2024",
+        "isAdmin": false,
+        "isOnline": true,
+        "isWhitelisted": true
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "GET /api/v1/players/online": {
+    "players": [
+      {
+        "license": "0123456789abcdef0123456789abcdef01234567",
+        "displayName": "John",
+        "playTime": 12480,
+        "tsJoined": 1706745600,
+        "tsLastConnection": 1717689601,
+        "notes": "VIP since 2024",
+        "isAdmin": false,
+        "isOnline": true,
+        "isWhitelisted": true
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "GET /api/v1/players/lookup": {
+    "players": [
+      {
+        "license": "0123456789abcdef0123456789abcdef01234567",
+        "displayName": "John",
+        "playTime": 12480,
+        "tsJoined": 1706745600,
+        "tsLastConnection": 1717689601,
+        "notes": "VIP since 2024",
+        "isAdmin": false,
+        "isOnline": true,
+        "isWhitelisted": true
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "POST /api/v1/players/warn": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/players/ban": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>",
+    "discord": {
+      "discordId": "123456789012345678",
+      "guilds": [
+        {
+          "guildId": "987654321098765432",
+          "guildName": "My RP Server",
+          "ok": true,
+          "code": "banned"
+        },
+        {
+          "guildId": "876543210987654321",
+          "guildName": "Staff",
+          "ok": false,
+          "code": "missing_permission",
+          "message": "the bot needs the Ban Members permission"
+        }
+      ]
+    }
+  },
+  "POST /api/v1/players/kick": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/players/dm": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/players/notes": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/players/whitelist": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "GET /api/v1/history/bans": {
+    "history": [
+      {
+        "id": "B1234",
+        "type": "ban",
+        "playerName": "John",
+        "author": "owner",
+        "reason": "Cheating",
+        "timestamp": 1717689601,
+        "isRevoked": false,
+        "banExpiration": "permanent"
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "GET /api/v1/history/warns": {
+    "history": [
+      {
+        "id": "W5678",
+        "type": "warn",
+        "playerName": "John",
+        "author": "owner",
+        "reason": "Spam in chat",
+        "timestamp": 1717689601,
+        "isRevoked": false,
+        "warnAcked": true
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "GET /api/v1/history/search": {
+    "history": [
+      {
+        "id": "B1234",
+        "type": "ban",
+        "playerName": "John",
+        "author": "owner",
+        "reason": "Cheating",
+        "timestamp": 1717689601,
+        "isRevoked": false,
+        "banExpiration": "permanent"
+      }
+    ],
+    "hasReachedEnd": true
+  },
+  "GET /api/v1/txadmin/ban-templates": [
+    {
+      "id": "a1b2c3",
+      "reason": "Cheating",
+      "duration": "permanent"
+    },
+    {
+      "id": "d4e5f6",
+      "reason": "RDM",
+      "duration": {
+        "value": 2,
+        "unit": "days"
+      }
+    }
+  ],
+  "POST /api/v1/history/revoke/{actionId}": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>",
+    "discord": {
+      "discordId": "123456789012345678",
+      "guilds": [
+        {
+          "guildId": "987654321098765432",
+          "guildName": "My RP Server",
+          "ok": true,
+          "code": "unbanned"
+        }
+      ]
+    }
+  },
+  "GET /api/v1/server/status": {
+    "serverName": "MyRP",
+    "txaVersion": "v8.3.0",
+    "fxsVersion": "12345",
+    "online": true,
+    "txAdminReachable": true,
+    "playerStats": {
+      "total": 1234,
+      "playedLast24h": 87,
+      "joinedLast24h": 12,
+      "joinedLast7d": 45
+    }
+  },
+  "POST /api/v1/server/restart": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/start": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/stop": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/schedule-restart": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/skip-restart": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/kickall": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/announcement": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/resource/start": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/resource/stop": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/resource/restart": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/resource/ensure": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/server/resource/refresh": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "GET /api/v1/console": {
+    "lines": [
+      "[script:oxmysql] Database connected.",
+      "Resource starting: oxmysql"
+    ],
+    "count": 2
+  },
+  "POST /api/v1/console/command": {
+    "success": true,
+    "message": "Command sent"
+  },
+  "GET /api/v1/server/log": {
+    "entries": [
+      {
+        "ts": 1759838400123,
+        "type": "playerJoining",
+        "src": {
+          "id": "A1B2#12",
+          "name": "John"
+        },
+        "msg": "joined with identifiers [license:…]"
+      },
+      {
+        "ts": 1759838401456,
+        "type": "ChatMessage",
+        "src": {
+          "id": "A1B2#12",
+          "name": "John"
+        },
+        "msg": "said \"hi\""
+      }
+    ],
+    "count": 2
+  },
+  "GET /api/v1/server/log/history": {
+    "boundry": false,
+    "log": [
+      {
+        "ts": 1759838400123,
+        "type": "DeathNotice",
+        "src": {
+          "id": "A1B2#12",
+          "name": "John"
+        },
+        "msg": "died from Pistol by Jane"
+      }
+    ]
+  },
+  "GET /api/v1/events": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "count": 2,
+    "nextCursor": "1759838400123_4711",
+    "events": [
+      {
+        "id": 4712,
+        "ts": "2026-10-07T12:00:05.120Z",
+        "type": "death",
+        "source": "serverlog",
+        "victim": "John",
+        "victimRef": "license:0123…4567",
+        "killer": "Jane",
+        "killerRef": "license:89ab…cdef",
+        "cause": "Pistol",
+        "pvp": true
+      },
+      {
+        "id": 4711,
+        "ts": "2026-10-07T12:00:00.123Z",
+        "type": "ban",
+        "source": "history",
+        "actionId": "BKL5-3SH4",
+        "player": "Max",
+        "admin": "Josef",
+        "reason": "Cheating",
+        "expiration": "permanent",
+        "revoked": false
+      }
+    ]
+  },
+  "GET /api/v1/events/deaths": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "count": 1,
+    "events": [
+      {
+        "id": 4712,
+        "ts": "2026-10-07T12:00:05.120Z",
+        "type": "death",
+        "source": "serverlog",
+        "victim": "John",
+        "victimRef": "license:0123…4567",
+        "killer": "Jane",
+        "killerRef": "license:89ab…cdef",
+        "cause": "Pistol",
+        "pvp": true
+      }
+    ]
+  },
+  "GET /api/v1/events/leaderboard": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "since": "2026-09-30T12:00:00Z",
+    "sort": "kills",
+    "players": [
+      {
+        "rank": 1,
+        "player": "Jane",
+        "kills": 42,
+        "deaths": 7,
+        "kd": 6
+      }
+    ]
+  },
+  "GET /api/v1/events/player": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "player": "Jane",
+    "names": [
+      "Jane"
+    ],
+    "since": "2026-09-07T12:00:00Z",
+    "found": true,
+    "kills": 42,
+    "deaths": 7,
+    "pvpDeaths": 5,
+    "kd": 6,
+    "topVictims": [
+      {
+        "name": "John",
+        "count": 12
+      }
+    ],
+    "topKillers": [
+      {
+        "name": "Max",
+        "count": 3
+      }
+    ],
+    "topWeapons": [
+      {
+        "name": "Pistol",
+        "count": 30
+      }
+    ],
+    "sessions": 18,
+    "firstSeen": "2026-09-08T18:00:00Z",
+    "lastSeen": "2026-10-07T12:00:00Z",
+    "bans": 0,
+    "warns": 1,
+    "recent": []
+  },
+  "GET /api/v1/events/summary": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "since": "2026-10-06T12:00:00Z",
+    "byType": {
+      "join": 120,
+      "leave": 118,
+      "death": 64,
+      "admin": 5,
+      "ban": 1
+    },
+    "kills": 41,
+    "uniquePlayers": 73,
+    "topKiller": {
+      "rank": 1,
+      "player": "Jane",
+      "kills": 9,
+      "deaths": 2,
+      "kd": 4.5
+    },
+    "topCauses": [
+      {
+        "name": "Pistol",
+        "count": 22
+      }
+    ],
+    "oldestEvent": "2026-09-08T18:00:00Z",
+    "newestEvent": "2026-10-07T12:00:05Z",
+    "storedEvents": 18234
+  },
+  "GET /api/v1/events/admin-actions": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "count": 1,
+    "events": [
+      {
+        "id": 5001,
+        "ts": "2026-10-07T12:01:02.000Z",
+        "type": "admin",
+        "source": "adminlog",
+        "admin": "Josef",
+        "message": "Kicked \"John\": afk",
+        "kind": "kick",
+        "loggedTime": "14:01:00"
+      }
+    ]
+  },
+  "GET /api/v1/events/sessions": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "count": 1,
+    "events": [
+      {
+        "id": 4700,
+        "ts": "2026-10-07T11:58:00.000Z",
+        "type": "join",
+        "source": "serverlog",
+        "player": "John",
+        "playerRef": "license:0123…4567",
+        "session": "A1B2#12",
+        "identifiers": [
+          "license:0123…4567",
+          "discord:2722…2003"
+        ]
+      }
+    ]
+  },
+  "GET /api/v1/events/playtime": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "since": "2026-09-30T12:00:00Z",
+    "totalSeconds": 512340,
+    "sessionCount": 812,
+    "unclosedSessions": 3,
+    "players": [
+      {
+        "player": "Jane",
+        "identifier": "license:0123…4567",
+        "sessions": 21,
+        "seconds": 86400,
+        "longestSeconds": 14400,
+        "online": true,
+        "lastSeen": "2026-10-07T12:00:00Z"
+      }
+    ]
+  },
+  "GET /api/v1/events/activity": {
+    "success": true,
+    "serverId": 1,
+    "eventLog": true,
+    "since": "2026-10-06T12:00:00Z",
+    "bucket": "hour",
+    "timeZone": "Europe/Vienna",
+    "totals": {
+      "joins": 120,
+      "deaths": 64,
+      "kills": 41,
+      "chat": 0,
+      "commands": 12,
+      "bans": 1,
+      "warns": 0
+    },
+    "buckets": [
+      {
+        "start": "2026-10-07T14:00+02:00",
+        "joins": 9,
+        "players": 8,
+        "deaths": 4,
+        "kills": 3,
+        "chat": 0,
+        "commands": 1,
+        "bans": 0,
+        "warns": 0
+      }
+    ]
+  },
+  "GET /api/v1/txadmin/action-log": {
+    "lines": [
+      {
+        "time": "14:01:00",
+        "admin": "Josef",
+        "message": "Kicked \"John\": afk",
+        "kind": "kick"
+      }
+    ],
+    "count": 1,
+    "total": 1
+  },
+  "POST /api/v1/whitelist/requests/{requestId}/approve": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/whitelist/requests/{requestId}/deny": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "POST /api/v1/whitelist/requests/deny-all": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "GET /api/v1/whitelist/approvals": [
+    {
+      "identifier": "discord:272800190639898628",
+      "playerName": "unknown",
+      "playerAvatar": null,
+      "tsApproved": 1759838400,
+      "approvedBy": "Josef"
+    }
+  ],
+  "POST /api/v1/whitelist/approvals": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "DELETE /api/v1/whitelist/approvals/{identifier}": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "GET /api/v1/txadmin/admins": {
+    "admins": [
+      {
+        "name": "owner",
+        "hasPassword": true,
+        "hasCitizenfx": true,
+        "hasDiscord": true,
+        "permsSummary": "Master Account",
+        "isMaster": true,
+        "isSelf": true
+      },
+      {
+        "name": "moderator-1",
+        "hasPassword": true,
+        "hasCitizenfx": false,
+        "hasDiscord": true,
+        "permsSummary": "All Permissions",
+        "isMaster": false,
+        "isSelf": false
+      }
+    ],
+    "total": 1
+  },
+  "GET /api/v1/txadmin/admins/{name}": {
+    "name": "moderator-1",
+    "citizenfxID": "",
+    "discordID": "272800190639898628",
+    "permissions": [
+      "console.view",
+      "players.ban"
+    ]
+  },
+  "GET /api/v1/txadmin/admins/available-permissions": {
+    "permissions": [
+      {
+        "id": "players.ban",
+        "label": "Players: Ban"
+      }
+    ]
+  },
+  "POST /api/v1/txadmin/admins": {
+    "success": true,
+    "password": "Xy!9k...",
+    "note": "Store this password securely – it will not be shown again."
+  },
+  "PUT /api/v1/txadmin/admins/{name}": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  },
+  "DELETE /api/v1/txadmin/admins/{name}": {
+    "success": true,
+    "message": "<confirmation text from txAdmin>"
+  }
+}

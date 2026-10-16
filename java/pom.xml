@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cloud.txapi</groupId>
+  <artifactId>txapi-sdk</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>txApi Java SDK</name>
+  <description>Official Java client for the txApi REST and WebSocket API (FiveM / txAdmin).</description>
+  <url>https://github.com/txadmin-api/txapi-sdks</url>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Josef Peter</name>
+      <organization>txApi</organization>
+      <organizationUrl>https://txapi.cloud</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/txadmin-api/txapi-sdks.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/txadmin-api/txapi-sdks.git</developerConnection>
+    <url>https://github.com/txadmin-api/txapi-sdks/tree/main/java</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/txadmin-api/txapi-sdks/issues</url>
+  </issueManagement>
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson.version>2.19.2</jackson.version>
+    <junit.version>5.12.2</junit.version>
+    <assertj.version>3.27.6</assertj.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!-- assertj-core 3.27.6 asks for byte-buddy 1.17.7; 1.17.8 is the patch release
+           (and the one present in a typical local repository). Test scope only. -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>1.17.8</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin><artifactId>maven-clean-plugin</artifactId><version>3.4.1</version></plugin>
+      <plugin><artifactId>maven-resources-plugin</artifactId><version>3.3.1</version></plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version>
+        <executions>
+          <execution>
+            <!-- Tests are compiled into the module; let them use the JDK's built-in HTTP server
+                 as the mock backend. Not needed at runtime. -->
+            <id>default-testCompile</id>
+            <configuration>
+              <compilerArgs>
+                <arg>--add-modules=jdk.httpserver</arg>
+                <arg>--add-reads=cloud.txapi.sdk=jdk.httpserver</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- examples/ is compiled with the tests so the samples never drift from the API. -->
+            <id>compile-examples</id>
+            <phase>test-compile</phase>
+            <goals><goal>testCompile</goal></goals>
+            <configuration>
+              <compileSourceRoots><root>${project.basedir}/examples</root></compileSourceRoots>
+              <compilerArgs>
+                <arg>--add-modules=jdk.httpserver</arg>
+                <arg>--add-reads=cloud.txapi.sdk=jdk.httpserver</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId><version>3.5.4</version>
+        <configuration><useModulePath>false</useModulePath></configuration>
+      </plugin>
+      <plugin><artifactId>maven-jar-plugin</artifactId><version>3.4.2</version></plugin>
+      <plugin><artifactId>maven-install-plugin</artifactId><version>3.1.4</version></plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <!-- Maven Central release: `mvn -P release deploy` (CI: .github/workflows/release.yml).
+         Central requires sources, javadoc and GPG signatures for every artifact; the
+         credentials come from settings.xml (server id "central") and MAVEN_GPG_PASSPHRASE. -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId><version>3.3.1</version>
+            <executions>
+              <execution><id>attach-sources</id><goals><goal>jar-no-fork</goal></goals></execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId><version>3.11.2</version>
+            <configuration>
+              <doclint>none</doclint>
+              <quiet>true</quiet>
+            </configuration>
+            <executions>
+              <execution><id>attach-javadocs</id><goals><goal>jar</goal></goals></execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId><version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
+                <configuration>
+                  <gpgArguments><arg>--pinentry-mode</arg><arg>loopback</arg></gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId><version>0.8.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
+              <waitUntil>validated</waitUntil>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

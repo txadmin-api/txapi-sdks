@@ -1,0 +1,91 @@
+# Tests of all four SDKs. Runs on pushes and pull requests here, and is
+# called by release.yml before anything is published.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  versions:
+    name: Versions agree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh scripts/check-version.sh
+
+  typescript:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: typescript/package-lock.json
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run check
+
+  python:
+    name: Python (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.13"]
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"
+      - name: Generated code matches spec/endpoints.json
+        if: matrix.python == '3.13'
+        run: python -I scripts/generate.py --check
+      - name: Lint & types
+        if: matrix.python == '3.13'
+        run: |
+          ruff check src scripts tests examples
+          ruff format --check src scripts tests examples
+          mypy --strict src
+      - run: pytest -q -W error
+
+  java:
+    name: Java
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: java
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: java/pom.xml
+      - run: mvn -B --no-transfer-progress verify
+
+  fivem:
+    name: FiveM (Lua)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4
+      - run: sh fivem/tests/run.sh

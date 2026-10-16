@@ -1,0 +1,75 @@
+{
+  "name": "@txapi/sdk",
+  "version": "1.0.0",
+  "description": "Official TypeScript/JavaScript SDK for the txApi REST and WebSocket API (txAdmin / FiveM server management).",
+  "license": "MIT",
+  "author": "Josef Peter",
+  "homepage": "https://txapi.cloud/docs/sdks",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/txadmin-api/txapi-sdks.git",
+    "directory": "typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/txadmin-api/txapi-sdks/issues"
+  },
+  "keywords": [
+    "txapi",
+    "txadmin",
+    "fivem",
+    "cfx",
+    "sdk",
+    "api",
+    "webhooks",
+    "websocket"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/ws": "^8.18.2",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.4",
+    "ws": "^8.22.0"
+  },
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

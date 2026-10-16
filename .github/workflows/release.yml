@@ -1,0 +1,215 @@
+# Publishes a release when a tag v<version> is pushed (the mirror from the
+# txApi main repository pushes it together with the release commit).
+#
+#   1. tests (ci.yml) and a version check against the tag
+#   2. build files: npm tarball, wheel + sdist, jar + pom, FiveM zip
+#   3. GitHub release with those files and SHA256SUMS — always
+#   4. npm, PyPI, Maven Central — each only when switched on with a repository
+#      variable (Settings → Secrets and variables → Actions → Variables):
+#        PUBLISH_NPM=true    trusted publishing, or secret NPM_TOKEN
+#        PUBLISH_PYPI=true   trusted publishing (environment "pypi")
+#        PUBLISH_MAVEN=true  secrets MAVEN_CENTRAL_USERNAME / _PASSWORD,
+#                            MAVEN_GPG_PRIVATE_KEY / _PASSPHRASE
+#
+# Every publish step first asks the registry whether the version is already
+# there and skips it if so: a re-run after a partial failure finishes the
+# missing registries instead of failing on the ones that already worked.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re)publish, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    name: Build release files
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - id: version
+        name: Tag matches the SDK versions
+        run: |
+          version="${TAG#v}"
+          sh scripts/check-version.sh "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: java/pom.xml
+      - run: (cd typescript && npm ci) && python -m pip install --upgrade build
+      - run: PYTHON=python sh scripts/pack.sh all "$RUNNER_TEMP/release"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: ${{ runner.temp }}/release/*
+          if-no-files-found: error
+
+  github-release:
+    name: GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-files
+          path: release
+      - name: Release notes from the changelogs
+        run: |
+          version="${{ needs.build.outputs.version }}"
+          api="$(sed -n 's/.*"apiVersion": *"\([^"]*\)".*/\1/p' spec/endpoints.json | head -1)"
+          {
+            echo "All four SDKs at **$version**, targeting txApi API **$api**."
+            echo
+            echo "| | Install |"
+            echo "|---|---|"
+            echo "| TypeScript | \`npm install @txapi/sdk@$version\` |"
+            echo "| Python | \`pip install \"txapi-sdk[live]==$version\"\` |"
+            echo "| Java | \`cloud.txapi:txapi-sdk:$version\` |"
+            echo "| FiveM | \`txapi-fivem-$version.zip\` below, extract into \`resources/\` |"
+            for sdk in typescript python java fivem; do
+              # the section of this version, up to the next "## [" heading
+              section="$(awk -v v="$version" '
+                /^## \[/ { if (on) exit; on = index($0, "[" v "]") > 0; next }
+                on' "$sdk/CHANGELOG.md")"
+              if [ -n "$section" ]; then
+                echo; echo "## $sdk"; echo "$section"
+              fi
+            done
+          } > notes.md
+          cat notes.md
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --clobber
+          else
+            gh release create "$TAG" release/* --title "$TAG" --notes-file notes.md --verify-tag
+          fi
+
+  npm:
+    name: npm
+    needs: build
+    if: vars.PUBLISH_NPM == 'true'
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write   # provenance + trusted publishing
+    defaults:
+      run:
+        working-directory: typescript
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest   # trusted publishing needs npm >= 11.5
+      - id: exists
+        run: |
+          if npm view "@txapi/sdk@${{ needs.build.outputs.version }}" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"; echo "already on npm — skipping"
+          fi
+      - if: steps.exists.outputs.already != 'true'
+        run: npm ci && npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  pypi:
+    name: PyPI
+    needs: build
+    if: vars.PUBLISH_PYPI == 'true'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # trusted publishing
+    steps:
+      - id: exists
+        run: |
+          code="$(curl -s -o /dev/null -w '%{http_code}' "https://pypi.org/pypi/txapi-sdk/${{ needs.build.outputs.version }}/json")"
+          if [ "$code" = "200" ]; then echo "already=true" >> "$GITHUB_OUTPUT"; echo "already on PyPI — skipping"; fi
+      - uses: actions/download-artifact@v4
+        if: steps.exists.outputs.already != 'true'
+        with:
+          name: release-files
+          path: release
+      - if: steps.exists.outputs.already != 'true'
+        run: mkdir dist && cp release/txapi_sdk-* dist/ && ls dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        if: steps.exists.outputs.already != 'true'
+
+  maven-central:
+    name: Maven Central
+    needs: build
+    if: vars.PUBLISH_MAVEN == 'true'
+    runs-on: ubuntu-latest
+    environment: maven-central
+    defaults:
+      run:
+        working-directory: java
+    steps:
+      - id: exists
+        working-directory: .
+        run: |
+          v="${{ needs.build.outputs.version }}"
+          code="$(curl -s -o /dev/null -w '%{http_code}' "https://repo1.maven.org/maven2/cloud/txapi/txapi-sdk/$v/txapi-sdk-$v.pom")"
+          if [ "$code" = "200" ]; then echo "already=true" >> "$GITHUB_OUTPUT"; echo "already on Maven Central — skipping"; fi
+      - uses: actions/checkout@v4
+        if: steps.exists.outputs.already != 'true'
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-java@v4
+        if: steps.exists.outputs.already != 'true'
+        with:
+          java-version: "17"
+          distribution: temurin
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - if: steps.exists.outputs.already != 'true'
+        run: mvn -B --no-transfer-progress -P release -DskipTests deploy
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

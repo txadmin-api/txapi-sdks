@@ -1,0 +1,49 @@
+{
+  "$comment": "Shared webhook signature test vectors. Every SDK's verifyWebhook must accept `valid` and reject each case in `invalid` (with now = nowSeconds).",
+  "secret": "whsec_dGVzdC1zZWNyZXQtZm9yLXNkay10ZXN0LXZlY3RvcnM",
+  "nowSeconds": 1760000060,
+  "toleranceSeconds": 300,
+  "body": "{\"id\":\"5f0c8a52-6c3c-4c1e-9d0e-2b6f2d1f3a10\",\"event\":\"player.banned\",\"createdAt\":\"2025-10-09T08:53:20Z\",\"serverId\":1,\"data\":{\"request\":{\"identifier\":\"license:0123456789abcdef0123456789abcdef01234567\",\"reason\":\"cheating\",\"durationHours\":24}}}",
+  "valid": {
+    "header": "t=1760000000,v1=1a20d7874eb60f4e2e2db9a93d000c75bdce16ad71b0c8320aac36d77736d88d"
+  },
+  "validWithRotatedSecret": {
+    "$comment": "Several v1 entries: valid if ANY matches",
+    "header": "t=1760000000,v1=0000000000000000000000000000000000000000000000000000000000000000,v1=1a20d7874eb60f4e2e2db9a93d000c75bdce16ad71b0c8320aac36d77736d88d"
+  },
+  "invalid": [
+    {
+      "name": "wrong signature",
+      "header": "t=1760000000,v1=0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "body tampered",
+      "header": "t=1760000000,v1=1a20d7874eb60f4e2e2db9a93d000c75bdce16ad71b0c8320aac36d77736d88d",
+      "body": "{\"id\":\"5f0c8a52-6c3c-4c1e-9d0e-2b6f2d1f3a10\",\"event\":\"player.banned\",\"createdAt\":\"2025-10-09T08:53:20Z\",\"serverId\":1,\"data\":{\"request\":{\"identifier\":\"license:0123456789abcdef0123456789abcdef01234567\",\"reason\":\"cheating\",\"durationHours\":48}}}"
+    },
+    {
+      "name": "too old",
+      "header": "t=1759999000,v1=c7ae0652ac7310f7d7310a042486eba57b83e7f37a2ed80601c20553d9394757"
+    },
+    {
+      "name": "too far in the future",
+      "header": "t=1760001000,v1=e760c9b6d13908e26ef0ab8d709c123d43bcce4960254147d537eef322eb3211"
+    },
+    {
+      "name": "missing timestamp",
+      "header": "v1=1a20d7874eb60f4e2e2db9a93d000c75bdce16ad71b0c8320aac36d77736d88d"
+    },
+    {
+      "name": "missing signature",
+      "header": "t=1760000000"
+    },
+    {
+      "name": "garbage",
+      "header": "nonsense"
+    },
+    {
+      "name": "empty",
+      "header": ""
+    }
+  ]
+}
